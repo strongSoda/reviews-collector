@@ -143,7 +143,8 @@
                     reviewerCity: form.city.value,
                     reviewerEmail: form.email.value,
                     reviewerProfileImage: form.profile_pic.value,
-                    // rating: form.rating.value,
+                    // select ratingNumber
+                    rating: document.querySelector('.ratingNumber').innerHTML,
                     date: new Date().toISOString(),
                 }
             }
