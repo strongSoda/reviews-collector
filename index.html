@@ -78,6 +78,7 @@
                 <footer>Powered by <a href="https://ureka.io/?ref=co" target="_blank">Ureka.io</a></footer>
             </form>
         </div>
+
     </div>
     <script>
         // show rating number
@@ -95,6 +96,16 @@
             }
             return(false);
         }
+
+        function showSuccessMessage() {
+                window.location.href = '/success.html';
+            }
+
+            function showErrorMessage() {
+                alert('Something went wrong. Please try again later.');
+            }
+
+
 
         // get query string value
         console.log(decodeURI(getQueryVariable('website_name')));
@@ -133,77 +144,112 @@
             
             const submitBtn = document.querySelector('#submitBtn');
             // loading spinner while submitting
-            submitBtn.innerHTML = 'loading... <i class="fas fa-spinner fa-spin"></i>';
+            submitBtn.value = 'Submitting...';
             submitBtn.disabled = true;
             submitBtn.style.backgroundColor = '#ccc';
 
-            var formData = new FormData(form);
-            // var xhr = new XMLHttpRequest();
-            // xhr.open('POST', 'https://ureka.io/api/v1/reviews');
-            // xhr.send(formData);
-            // xhr.onload = function() {
-            //     console.log(xhr.responseText);
-            // };
 
-            let url = 'https://api.sheety.co/e6308a30988c2a9e6e0ead2fd194efa5/urekaReviewsCollections/db';
-            let body = {
-                db: {
-                    websiteName: decodeURI(getQueryVariable('website_name')),
-                    websiteUrl: decodeURI(getQueryVariable('website_url')),
-                    websiteDesc: decodeURI(getQueryVariable('website_desc')),
-                    websiteLogo: decodeURI(getQueryVariable('website_logo')),
-                    productName: decodeURI(getQueryVariable('product_name')),
-                    productDesc: decodeURI(getQueryVariable('product_desc')),
-                    productImage: decodeURI(getQueryVariable('product_image')),
-                    productUrl: decodeURI(getQueryVariable('product_url')),
-                    submissionEmail: decodeURI(getQueryVariable('submission')),
-                    reviewerName: form.name.value,
-                    reviewText: form.review.value,
-                    reviewerCity: form.city.value,
-                    reviewerEmail: form.email.value,
-                    reviewerProfileImage: form.profile_pic.value,
-                    // select ratingNumber
-                    rating: document.querySelector('.ratingNumber').innerHTML,
-                    date: new Date().toISOString(),
-                }
+            // upload profile pic
+            const profile_pic = document.querySelector('#profile_pic');
+            const profile_pic_name = profile_pic.files[0].name;
+            const profile_pic_size = profile_pic.files[0].size;
+            const profile_pic_type = profile_pic.files[0].type;
+            const profile_pic_ext = profile_pic_name.split('.').pop();
+            const profile_pic_allowed_ext = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+            if (profile_pic_allowed_ext.indexOf(profile_pic_ext) == -1) {
+                alert('Invalid file type. Allowed file types are: ' + profile_pic_allowed_ext.join(', '));
+                submitBtn.value = 'Submit';
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = '#4CAF50';
+                return false;
             }
-            fetch(url, {
+
+            // upload profile pic to imgur
+            const profile_pic_form = new FormData();
+            profile_pic_form.append('image', profile_pic.files[0]);
+            fetch('https://api.imgur.com/3/image', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    Authorization: 'Client-ID 7e6d12bb05e5891'
+                    // client secret 783b0e227ff15ad09d1009c082901520b4ae07f4
                 },
-                body: JSON.stringify(body)
-            })
-                .then((response) => response.json())
+                body: profile_pic_form
+            }).then(response => response.json())
                 .then(json => {
                     // Do something with object
-                    console.log(json.db);
+                    console.log(json.data.link);
+                    const profile_pic_url = json.data.link
+                    console.log(profile_pic_url);
+                    if (!profile_pic_url) {
+                        alert('Error uploading profile pic. Try again later.');
+                        submitBtn.value = 'Submit';
+                        submitBtn.disabled = false;
+                        submitBtn.style.backgroundColor = '#4CAF50';
+                        return;
+                    }
 
-                    // reset loading spinner
-                    submitBtn.innerHTML = 'Submit';
-                    submitBtn.disabled = false;
-                    submitBtn.style.backgroundColor = '#4CAF50';
-                    showSuccessMessage()
+                    var formData = new FormData(form);
+
+                    let url = 'https://api.sheety.co/e6308a30988c2a9e6e0ead2fd194efa5/urekaReviewsCollections/db';
+                    let body = {
+                        db: {
+                            websiteName: decodeURI(getQueryVariable('website_name')),
+                            websiteUrl: decodeURI(getQueryVariable('website_url')),
+                            websiteDesc: decodeURI(getQueryVariable('website_desc')),
+                            websiteLogo: decodeURI(getQueryVariable('website_logo')),
+                            productName: decodeURI(getQueryVariable('product_name')),
+                            productDesc: decodeURI(getQueryVariable('product_desc')),
+                            productImage: decodeURI(getQueryVariable('product_image')),
+                            productUrl: decodeURI(getQueryVariable('product_url')),
+                            submissionEmail: decodeURI(getQueryVariable('submission')),
+                            reviewerName: form.name.value,
+                            reviewText: form.review.value,
+                            reviewerCity: form.city.value,
+                            reviewerEmail: form.email.value,
+                            reviewerProfileImage: profile_pic_url,
+                            // select ratingNumber
+                            rating: document.querySelector('.ratingNumber').innerHTML,
+                            date: new Date().toISOString(),
+                        }
+                    }
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(body)
+                    })
+                        .then((response) => response.json())
+                        .then(json => {
+                            // Do something with object
+                            console.log(json.db);
+
+                            // reset loading spinner
+                            submitBtn.value = 'Submit';
+                            submitBtn.disabled = false;
+                            submitBtn.style.backgroundColor = '#4CAF50';
+                            showSuccessMessage()
+                        })
+                        .catch(error => {
+                            // Do something with error
+                            console.log(error);
+                            // reset loading spinner
+                            submitBtn.value = 'Submit';
+                            submitBtn.disabled = false;
+                            submitBtn.style.backgroundColor = '#4CAF50';
+                            showErrorMessage()
+                        });
                 })
                 .catch(error => {
                     // Do something with error
                     console.log(error);
                     // reset loading spinner
-                    submitBtn.innerHTML = 'Submit';
+                    submitBtn.value = 'Submit';
                     submitBtn.disabled = false;
                     submitBtn.style.backgroundColor = '#4CAF50';
                     showErrorMessage()
                 });
         });
-
-        function showSuccessMessage() {
-            window.location.href = '/success.html';
-        }
-
-        function showErrorMessage() {
-            alert('Something went wrong. Please try again later.');
-        }
-
         // Ureka.io is the best reviews no-code solution.
         // http://127.0.0.1:5500/index.html?website_name=Ureka&website_url=https://ureka.io&submission=ikhan77727@gmail.com&website_desc=Win%20new%20customers%20with%20reviews%20on%20your%20website&website_logo=https://ureka.io/assets/images/favicon.png?v=b289904a&product_name=Reviews%20Wall&product_desc=Integrate%20reviews%20seamlessly%20into%20your%20website&product_image=https://ureka.io/assets/images/image11.jpg?v=b289904a&product_url=https://ureka.io/#wall-widget-demo
     </script>
