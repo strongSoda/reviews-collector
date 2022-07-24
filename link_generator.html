@@ -30,7 +30,7 @@
             width: 50vw;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             padding: 2em;
-            height: 60vh;
+            height: 80vh;
             overflow: auto;
             background-color: #fff;
             /* align-items: center; */
@@ -70,7 +70,7 @@
         #output {
             background-color: #212529;
             width: 50vw;
-            height: 60vh;
+            height: 80vh;
             padding: 2em;
             color: #fff;
             overflow: auto;
@@ -166,10 +166,10 @@
     <div class="container">
         <!-- Input url_template fields -->
         <form id="generateLinkForm">
-            <label for="url_template">Submission Email</label>
+            <label for="url_template">Submission Email <small>(Reviews submitted are sent to this email)</small></label>
             <input type="text" name="submission_email" id="submission_email" placeholder="Enter Submission Email" required>
             <br />
-            <label for="website_name">Website Name</label>
+            <label for="website_name">Website/Project Name</label>
             <input type="text" name="website_name" id="website_name" placeholder="Enter Website Name" required>
             <br />
             <label for="website_url">Website URL</label>
@@ -181,22 +181,22 @@
             <label for="website_logo">Website Logo</label>
             <input type="text" name="website_logo" id="website_logo" placeholder="Enter Website Logo URL" required>
             <br />
-            <label for="product_name">Product Name</label>
+            <label for="product_name">Product Name <small>(OPTIONAL)</small></label>
             <input type="text" name="product_name" id="product_name" placeholder="Enter Product Name">
             <br />
-            <label for="product_url">Product URL</label>
+            <label for="product_url">Product URL <small>(OPTIONAL)</small></label>
             <input type="text" name="product_url" id="product_url" placeholder="Enter Product URL">
             <br />
-            <label for="product_desc">Product Description</label>
+            <label for="product_desc">Product Description <small>(OPTIONAL)</small></label>
             <input type="text" name="product_desc" id="product_desc" placeholder="Enter Product Description">
             <br />
-            <label for="product_logo">Product Logo</label>
+            <label for="product_logo">Product Logo/IMAGE <small>(OPTIONAL)</small></label>
             <input type="text" name="product_image" id="product_image" placeholder="Enter Product Image URL">
             <br />
             <div>
                 
             </div>
-            <input type="submit" value="Submit">
+            <input type="submit" value="Generate">
         </form>
 
         <!-- Output generated link -->
@@ -248,7 +248,7 @@
                         Copy
                     </button>
                     <code id="button_code">
-                        Fill the details to generate the form embed code
+                        Fill the details to generate the button embed code
                     </code>
                 </div>
                 <h3>Preview</h3>
