@@ -9,6 +9,9 @@
     <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <!-- css -->
 
+    <!-- load fontawesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -49,29 +52,29 @@
                 <!-- star rating -->
                 <label class="rating-label">
                     <strong>Rating: <span class="ratingNumber">1</span></strong>
-                    <input class="rating" max="5" oninput="this.style.setProperty('--value', this.value); console.log(this.value); showRatingNumber(this.value)" step="0.5" type="range" value="1">
+                    <input required class="rating" max="5" oninput="this.style.setProperty('--value', this.value); console.log(this.value); showRatingNumber(this.value)" step="0.5" type="range" value="1">
                 </label>
                 <br />
                 <label for="name">Name:</label>
-                <input type="text" name="name" id="name" placeholder="Enter your Name">
+                <input required type="text" name="name" id="name" placeholder="Enter your Name">
                 <br />
                 <label for="review" class="leading-7 text-sm text-gray-600">Review</label>
-                <textarea id="review" name="review" placeholder="Type your review..."
+                <textarea required id="review" name="review" placeholder="Type your review..."
                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
                 <br />
                 <label for="city">City:</label>
-                <input type="text" name="city" id="city" placeholder="New York">
+                <input required type="text" name="city" id="city" placeholder="New York">
                 <br />
                 <!-- email -->
                 <label for="email" class="leading-7 text-sm text-gray-600">Email</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email"
+                <input required type="email" id="email" name="email" placeholder="Enter your email"
                     class="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
                 <br />
                 <label for="profile_pic">Porfile Image:</label>
-                <input type="file" name="profile_pic" id="profile_pic">
+                <input required type="file" name="profile_pic" id="profile_pic">
 
                 <br />
-                <input type="submit" value="Submit">
+                <input type="submit" value="Submit" id="submitBtn">
             </form>
         </div>
     </div>
@@ -114,19 +117,26 @@
         // set website logo
         document.querySelector('#website_logo').src = decodeURI(getQueryVariable('website_logo'));
         // set product name
-        document.querySelector('#product_name').innerHTML = decodeURI(getQueryVariable('product_name'));
-        // set product desc
-        document.querySelector('#product_desc').innerHTML = decodeURI(getQueryVariable('product_desc'));
-        // set product image
-        document.querySelector('#product_image').src = decodeURI(getQueryVariable('product_image'));
-        // set product url
-        document.querySelector('#product_url').href = decodeURI(getQueryVariable('product_url'));
+        // document.querySelector('#product_name').innerHTML = decodeURI(getQueryVariable('product_name'));
+        // // set product desc
+        // document.querySelector('#product_desc').innerHTML = decodeURI(getQueryVariable('product_desc'));
+        // // set product image
+        // document.querySelector('#product_image').src = decodeURI(getQueryVariable('product_image'));
+        // // set product url
+        // document.querySelector('#product_url').href = decodeURI(getQueryVariable('product_url'));
 
         console.log(decodeURI(getQueryVariable('submission')));
         // get form data
         var form = document.querySelector('form');
         form.addEventListener('submit', function(e) {
             e.preventDefault();
+            
+            const submitBtn = document.querySelector('#submitBtn');
+            // loading spinner while submitting
+            submitBtn.innerHTML = 'loading... <i class="fas fa-spinner fa-spin"></i>';
+            submitBtn.disabled = true;
+            submitBtn.style.backgroundColor = '#ccc';
+
             var formData = new FormData(form);
             // var xhr = new XMLHttpRequest();
             // xhr.open('POST', 'https://ureka.io/api/v1/reviews');
@@ -168,8 +178,31 @@
                 .then(json => {
                     // Do something with object
                     console.log(json.db);
+
+                    // reset loading spinner
+                    submitBtn.innerHTML = 'Submit';
+                    submitBtn.disabled = false;
+                    submitBtn.style.backgroundColor = '#4CAF50';
+                    showSuccessMessage()
+                })
+                .catch(error => {
+                    // Do something with error
+                    console.log(error);
+                    // reset loading spinner
+                    submitBtn.innerHTML = 'Submit';
+                    submitBtn.disabled = false;
+                    submitBtn.style.backgroundColor = '#4CAF50';
+                    showErrorMessage()
                 });
         });
+
+        function showSuccessMessage() {
+            window.location.href = '/success.html';
+        }
+
+        function showErrorMessage() {
+            alert('Something went wrong. Please try again later.');
+        }
 
         // Ureka.io is the best reviews no-code solution.
         // http://127.0.0.1:5500/index.html?website_name=Ureka&website_url=https://ureka.io&submission=ikhan77727@gmail.com&website_desc=Win%20new%20customers%20with%20reviews%20on%20your%20website&website_logo=https://ureka.io/assets/images/favicon.png?v=b289904a&product_name=Reviews%20Wall&product_desc=Integrate%20reviews%20seamlessly%20into%20your%20website&product_image=https://ureka.io/assets/images/image11.jpg?v=b289904a&product_url=https://ureka.io/#wall-widget-demo
