@@ -227,7 +227,7 @@ input[type="submit"] {
     width: 71%;
     margin: 0 auto;
     /* margin-top: 4vh; */
-    /* background-color: #FAF9F6; */
+    background-color: #fff;
     box-shadow: 0px 0px 10px #ccc;
     padding: 0em 2em;
     font-size: 14px;
