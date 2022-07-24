@@ -152,13 +152,15 @@ body {
     color: black;
 }
 footer {
-    background-color: #354259;
-    color: #efefef;
+    /* color: #efefef; */
+    /* color: #354259; */
     /* height: 2vh; */
     text-align: center;
-    padding: 1vh;
+    /* padding: 1vh; */
     font-size: 14px;
-    display: none;
+    /* display: none; */
+    /* position: absolute; */
+    /* left: 45%; */
 }
 .right {
     /* background-color: #ECE5C7; */
